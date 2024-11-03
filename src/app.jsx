@@ -332,7 +332,7 @@ const App = () => {
         {/* Logo e titolo */}
         <div className="flex items-center justify-start mb-3">
           <img 
-            src="https://[tuo-username].github.io/DietApp/DietApp-logo.png" 
+            src="https://ruthemir95.github.io/DietApp/DietApp-logo.png" 
             alt="DietApp Logo" 
             className="h-16 w-auto mr-2" 
           />
