@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), splitVendorChunkPlugin()],
   base: '/DietApp/',
   build: {
-    outDir: 'build',
+    outDir: 'dist',
     assetsDir: 'assets',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
