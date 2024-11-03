@@ -1,0 +1,16 @@
+{
+  "name": "Piano Alimentare",
+  "short_name": "Dieta",
+  "description": "Piano alimentare personalizzato",
+  "start_url": "/DietApp/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/DietApp/DietApp-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
