@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: 'https://ruthemir95.github.io/DietApp/',
   build: {
-    outDir: 'dist'
+    outDir: 'build'
   },
   publicDir: 'public',
 })
