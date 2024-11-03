@@ -28,6 +28,7 @@ import NameInputDialog from './components/NameInputDialog';
 import Toast from './components/Toast';
 import RenamePlanDialog from './components/RenamePlanDialog';
 import WelcomeDialog from './components/WelcomeDialog';
+import logo from './assets/DietApp-logo.png';
 
 // Icone per i pasti
 const mealIcons = {
@@ -332,7 +333,7 @@ const App = () => {
         {/* Logo e titolo */}
         <div className="flex items-center justify-start mb-3">
           <img 
-            src="https://ruthemir95.github.io/DietApp/DietApp-logo.png" 
+            src={`${import.meta.env.BASE_URL}DietApp-logo.png`} 
             alt="DietApp Logo" 
             className="h-16 w-auto mr-2" 
           />
