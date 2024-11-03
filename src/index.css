@@ -10,4 +10,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: #f8fafc;
+  overscroll-behavior-y: none;
+}
+
+.sticky {
+  position: sticky;
+  backdrop-filter: blur(10px);
 }

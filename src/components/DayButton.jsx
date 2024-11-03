@@ -1,32 +1,39 @@
+// src/components/DayButton.jsx
+import React from 'react';
+
 const DayButton = ({ 
   day, 
   isSelected, 
   isSwapMode, 
   isFirstDay, 
+  isSwapped,
+  swapInfo,
   onClick 
 }) => {
   return (
-    <button 
-      onClick={onClick}
-      className={`w-full h-9 text-xs font-medium flex items-center justify-center rounded-lg transition-all duration-200 ${
-        isSelected 
-          ? 'bg-blue-500 text-white' 
-          : isFirstDay
-          ? 'bg-yellow-200 text-gray-800'
-          : 'bg-white text-gray-800 hover:bg-gray-100'
-      } ${
-        isSwapMode 
-          ? 'relative border-2 border-dashed border-gray-300'
-          : 'border border-gray-200'
-      }`}
-    >
-      {day.slice(0, 3)}
-      {isSwapMode && isFirstDay && (
-        <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-          1°
-        </span>
+    <div className="relative group h-full">
+      <button
+        onClick={onClick}
+        className={`
+          relative w-full p-2 rounded-lg text-xs font-medium transition-all duration-200
+          ${isSelected ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}
+          ${isSwapMode && !isFirstDay ? 'hover:bg-yellow-100' : ''}
+          ${isFirstDay ? 'bg-yellow-500 text-white' : ''}
+          ${isSwapped ? 'border border-yellow-400/50' : ''}
+        `}
+      >
+        {day.slice(0, 3)}
+      </button>
+
+      {/* Etichetta dello scambio spostata sotto */}
+      {isSwapped && !isSwapMode && swapInfo && (
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 
+                      text-[11px] font-medium text-yellow-600 uppercase tracking-wider
+                      whitespace-nowrap z-20 pt-1">
+          ↔ {swapInfo.otherDay.slice(0, 3)}
+        </div>
       )}
-    </button>
+    </div>
   );
 };
 

@@ -3,8 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: 'https://ruthemir95.github.io/DietApp/',  // URL completo
+  base: 'https://ruthemir95.github.io/DietApp/',
   build: {
     outDir: 'dist'
-  }
+  },
+  publicDir: 'public',
 })
