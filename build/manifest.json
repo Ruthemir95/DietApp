@@ -8,7 +8,7 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "DietApp-logo.png",
+      "src": "/DietApp/DietApp-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
