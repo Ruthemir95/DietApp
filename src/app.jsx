@@ -332,7 +332,11 @@ const App = () => {
       <div className="sticky top-0 z-50 bg-gray-50 pb-4">
         {/* Logo e titolo */}
         <div className="flex items-center justify-start mb-3">
-          <img src="/DietApp-logo.png" alt="DietApp Logo" className="h-16 w-auto mr-2" />
+          <img 
+            src={logo} 
+            alt="DietApp Logo" 
+            className="h-8 w-8 mr-2 object-contain" 
+          />
           <span className="text-2xl font-bold text-gray-700">DietApp</span>
         </div>
 
