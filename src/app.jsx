@@ -15,6 +15,8 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "./components/ui/card";
 import NutritionSummary from './components/NutritionSummary';
 import DayButton from './components/DayButton';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { calculateDailyTotals } from './utils/nutritionParser';
 
 // Lazy loading per i componenti non essenziali
 const UserSelector = lazy(() => import('./components/UserSelector'));
@@ -336,11 +338,14 @@ const App = () => {
       <div className="sticky top-0 z-50 bg-gray-50 pb-4">
         {/* Logo e titolo */}
         <div className="flex items-center justify-start mb-3">
-          <img 
-            src={`${import.meta.env.BASE_URL}DietApp-logo.png`} 
-            alt="DietApp Logo" 
-            className="h-16 w-auto mr-2" 
-          />
+          <picture>
+            <source srcSet={`${import.meta.env.BASE_URL}DietApp-logo.webp`} type="image/webp" />
+            <img 
+              src={`${import.meta.env.BASE_URL}DietApp-logo.png`}
+              alt="DietApp Logo" 
+              className="h-16 w-auto mr-2"
+            />
+          </picture>
           <span className="text-2xl font-bold text-gray-700">DietApp</span>
         </div>
 
