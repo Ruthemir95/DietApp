@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Coffee,
   Apple,
@@ -13,28 +13,22 @@ import {
   ChevronDown
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "./components/ui/card";
-import NutritionSummary from './components/NutritionSummary';
+import UserSelector from "./components/UserSelector";
+import MealEditor from "./components/MealEditor";
+import MealPlanEditor from "./components/MealPlanEditor";
 import DayButton from './components/DayButton';
+import NutritionSummary from './components/NutritionSummary';
+import MealSection from './components/MealSection';
+import SwipeableView from './components/SwipeableView';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { calculateDailyTotals } from './utils/nutritionParser';
-
-// Lazy loading per i componenti non essenziali
-const UserSelector = lazy(() => import('./components/UserSelector'));
-const MealEditor = lazy(() => import('./components/MealEditor'));
-const MealPlanEditor = lazy(() => import('./components/MealPlanEditor'));
-const MealSection = lazy(() => import('./components/MealSection'));
-const SwipeableView = lazy(() => import('./components/SwipeableView'));
-const NameInputDialog = lazy(() => import('./components/NameInputDialog'));
-const Toast = lazy(() => import('./components/Toast'));
-const RenamePlanDialog = lazy(() => import('./components/RenamePlanDialog'));
-const WelcomeDialog = lazy(() => import('./components/WelcomeDialog'));
-
-// Lazy loading per le utilities
-const utils = {
-  fileHandler: () => import('./utils/fileHandler'),
-  nutritionParser: () => import('./utils/nutritionParser'),
-  planStructure: () => import('./utils/planStructure')
-};
+import { parseFile } from "./utils/fileHandler";
+import { parseNutritionData, calculateNutrition, calculateDailyTotals } from './utils/nutritionParser';
+import { createEmptyPlan } from './utils/planStructure';
+import NameInputDialog from './components/NameInputDialog';
+import Toast from './components/Toast';
+import RenamePlanDialog from './components/RenamePlanDialog';
+import WelcomeDialog from './components/WelcomeDialog';
+import logo from './assets/DietApp-logo.png';
 
 // Icone per i pasti
 const mealIcons = {
@@ -338,14 +332,7 @@ const App = () => {
       <div className="sticky top-0 z-50 bg-gray-50 pb-4">
         {/* Logo e titolo */}
         <div className="flex items-center justify-start mb-3">
-          <picture>
-            <source srcSet={`${import.meta.env.BASE_URL}DietApp-logo.webp`} type="image/webp" />
-            <img 
-              src={`${import.meta.env.BASE_URL}DietApp-logo.png`}
-              alt="DietApp Logo" 
-              className="h-16 w-auto mr-2"
-            />
-          </picture>
+          <img src="/DietApp-logo.png" alt="DietApp Logo" className="h-16 w-auto mr-2" />
           <span className="text-2xl font-bold text-gray-700">DietApp</span>
         </div>
 
@@ -490,51 +477,34 @@ const App = () => {
         )}
       </div>
 
-      {/* Componenti lazy loaded */}
-      <Suspense fallback={<div className="p-4 text-center">Caricamento...</div>}>
-        {showWelcomeDialog && (
-          <WelcomeDialog
-            onSaveName={(name) => {
-              setUserName(name);
-              setShowWelcomeDialog(false);
-            }}
-            onClose={() => setShowWelcomeDialog(false)}
-          />
-        )}
-
-        {editingMeal && (
-          <MealEditor
-            meal={editingMeal.meal}
-            items={editingMeal.items}
-            nutritionData={nutritionData}
-            onSave={(editedItems) => {
-              const updatedPlan = { ...currentPlan };
-              updatedPlan.plan[selectedDay][editingMeal.meal] = editedItems;
-              setMealPlans(prev => prev.map(p => 
-                p.id === currentPlanId ? updatedPlan : p
-              ));
-              setEditingMeal(null);
-            }}
-            onCancel={() => setEditingMeal(null)}
-          />
-        )}
-
-        {(isAddingPlan || isEditingPlan) && (
-          <MealPlanEditor
-            nutritionData={nutritionData}
-            initialPlan={currentPlan?.plan}
-            isEditing={isEditingPlan}
-            onSave={handleSavePlan}
-            onCancel={handleCancelPlanEdit}
-          />
-        )}
-      </Suspense>
+      {/* Welcome Dialog */}
+      {showWelcomeDialog && (
+        <WelcomeDialog
+          onSaveName={(name) => {
+            setUserName(name);
+            setShowWelcomeDialog(false);
+          }}
+          onClose={() => setShowWelcomeDialog(false)}
+        />
+      )}
 
       {/* Name Input Dialog */}
       {showNameDialog && (
         <NameInputDialog
           onConfirm={handleNameConfirm}
           onCancel={() => setShowNameDialog(false)}
+        />
+      )}
+
+      {/* Meal Plan Editor */}
+      {showPlanEditor && (
+        <MealPlanEditor
+          nutritionData={nutritionData}
+          onSave={handlePlanCreate}
+          onCancel={() => {
+            setShowPlanEditor(false);
+            setTempPlanName('');
+          }}
         />
       )}
 
@@ -571,6 +541,44 @@ const App = () => {
             ))}
           </div>
         </SwipeableView>
+      )}
+
+      {/* Editor dei pasti */}
+      {editingMeal && (
+        <MealEditor
+          meal={editingMeal.meal}
+          items={editingMeal.items}
+          nutritionData={nutritionData}
+          onSave={(editedItems) => {
+            const updatedPlan = { ...currentPlan };
+            updatedPlan.plan[selectedDay][editingMeal.meal] = editedItems;
+            setMealPlans(prev => prev.map(p => 
+              p.id === currentPlanId ? updatedPlan : p
+            ));
+            setEditingMeal(null);
+          }}
+          onCancel={() => setEditingMeal(null)}
+        />
+      )}
+
+      {/* Editor piano completo */}
+      {isAddingPlan || isEditingPlan && currentPlan && (
+        <MealPlanEditor
+          nutritionData={nutritionData}
+          initialPlan={currentPlan.plan}
+          isEditing={isEditingPlan}
+          onSave={(plan) => {
+            handleSavePlan(plan);
+          }}
+          onCancel={() => {
+            if (isAddingPlan) {
+              setMealPlans(prev => prev.filter(p => p.id !== currentPlanId));
+              setCurrentPlanId(null);
+            }
+            setIsAddingPlan(false);
+            setIsEditingPlan(false);
+          }}
+        />
       )}
 
       {toast && (

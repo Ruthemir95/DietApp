@@ -18,14 +18,14 @@ export const extractName = (fullName) => {
 
     // Prendi solo la prima parola come nome
     const firstWord = name.split(/\s+/)[0];
-    
+
     // Capitalizza la prima lettera e restituisci
     return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
 };
 
 export const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
-    
+
     // Restituisce un saluto basato sull'ora del giorno
     if (hour >= 5 && hour < 12) {
         return 'Buongiorno';
@@ -39,7 +39,7 @@ export const getTimeBasedGreeting = () => {
 export const formatGreeting = (planName) => {
     const name = extractName(planName); // Estrae il nome dal piano
     const greeting = getTimeBasedGreeting(); // Ottiene il saluto basato sull'ora
-    
+
     // Restituisce il saluto formattato
     return name ? `${greeting}, ${name}` : greeting;
 };

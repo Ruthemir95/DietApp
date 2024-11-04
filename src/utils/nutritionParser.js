@@ -90,7 +90,7 @@ export const calculateDailyTotals = (dayPlan) => {
     mealItems.forEach(item => {
       // Salta le alternative
       if (Array.isArray(item)) return;
-      
+
       const nutrition = item.nutrition || {
         calories: 0,
         protein: 0,

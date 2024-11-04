@@ -23,11 +23,11 @@ export const convertToMealPlan = (data) => {
     if (row.Giorno && row.Pasto && row.Alimento) {
       const giorno = row.Giorno.toUpperCase();
       const pasto = row.Pasto;
-      
+
       if (plan[giorno] && plan[giorno][pasto]) {
         // Crea l'oggetto alimento con i dati nutrizionali
         const item = {
-          item: row.Quantita 
+          item: row.Quantita
             ? `${row.Alimento}: ${row.Quantita}`
             : row.Alimento,
           nutrition: {

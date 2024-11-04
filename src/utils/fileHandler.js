@@ -56,8 +56,8 @@ const parseExcel = (file) => {
                 const workbook = XLSX.read(data, { type: 'array' });
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
-                
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, {
                     header: 1,
                     blankrows: false,
                     defval: ''
@@ -68,7 +68,7 @@ const parseExcel = (file) => {
                 }
 
                 // Normalizza le intestazioni
-                const headers = jsonData[0].map(header => 
+                const headers = jsonData[0].map(header =>
                     header.trim()
                         .normalize('NFD')
                         .replace(/[\u0300-\u036f]/g, '')
@@ -133,7 +133,7 @@ const convertToMealPlan = (data) => {
                 plan[giorno][pasto].push(item);
 
                 if (row.Alternative) {
-                    plan[giorno][pasto].push({ 
+                    plan[giorno][pasto].push({
                         alternative: row.Alternative,
                         nutrition: nutrition // Aggiungiamo i dati nutrizionali anche alle alternative
                     });
@@ -187,7 +187,7 @@ export const generateTemplate = () => {
 // Aggiorniamo anche la funzione per il download
 export const downloadTemplate = () => {
     const templateData = generateTemplate();
-    
+
     // Convertiamo l'array in stringa CSV
     const csvContent = templateData
         .map(row => row.join(','))
@@ -195,17 +195,17 @@ export const downloadTemplate = () => {
 
     // Creiamo il Blob con il contenuto CSV
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
     // Creiamo il link per il download
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
     link.setAttribute('download', 'template_piano_alimentare.csv');
     document.body.appendChild(link);
-    
+
     // Triggeriamo il download
     link.click();
-    
+
     // Pulizia
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
