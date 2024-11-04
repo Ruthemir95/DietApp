@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Info, AlertCircle, Flame, Dumbbell, Wheat, Drop } from 'lucide-react';
+import { Plus, X, Info, AlertCircle, Flame, Dumbbell, Wheat, Droplets } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import NutritionSummary from './NutritionSummary';
 import { calculateNutrition } from '../utils/nutritionParser';
@@ -104,7 +104,7 @@ const MealEditor = ({
             </div>
             <div className="flex flex-col items-center">
               <span className="text-blue-500">
-                <Drop className="h-4 w-4" />
+                <Droplets className="h-4 w-4" />
               </span>
               <span className="text-xs text-gray-500">G</span>
               <span className="font-medium">{totalNutrition.fat}g</span>
