@@ -68,23 +68,18 @@ const MealEditor = ({
     onSave(editedItems);
   };
 
+  const formatNutritionValue = (value) => {
+    // Arrotonda a 1 decimale e converti in stringa
+    return Number(value).toFixed(1);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <CardHeader className="sticky top-0 bg-white z-10 border-b">
-          <div className="flex items-center justify-between">
-            <CardTitle>Modifica {meal}</CardTitle>
-            <button
-              onClick={onCancel}
-              className="p-2 rounded-lg hover:bg-gray-100"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <NutritionSummary nutrition={totalNutrition} showLabels size="large" />
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Modifica {meal}</CardTitle>
         </CardHeader>
-
-        <CardContent className="space-y-4">
+        <CardContent>
           {/* Input per nuovo alimento */}
           <div className="relative">
             <div className="flex gap-2">
@@ -124,23 +119,36 @@ const MealEditor = ({
           {/* Lista items */}
           <ul className="space-y-2">
             {editedItems.map((item, index) => (
-              <li key={item.id || index} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-primary rounded-full" />
-                  <span>{item.item}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {item.nutrition && (
-                    <NutritionSummary nutrition={item.nutrition} size="small" />
-                  )}
+              <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg mb-2">
+                <div className="flex-1 mr-4">{item.item}</div>
+                
+                {/* Layout migliorato per i valori nutrizionali */}
+                <div className="flex space-x-3 items-center">
+                  <div className="flex flex-col items-center min-w-[45px]">
+                    <span className="text-xs text-gray-500">Kcal</span>
+                    <span className="text-sm">{formatNutritionValue(item.nutrition?.calories || 0)}</span>
+                  </div>
+                  <div className="flex flex-col items-center min-w-[45px]">
+                    <span className="text-xs text-gray-500">P</span>
+                    <span className="text-sm">{formatNutritionValue(item.nutrition?.protein || 0)}</span>
+                  </div>
+                  <div className="flex flex-col items-center min-w-[45px]">
+                    <span className="text-xs text-gray-500">C</span>
+                    <span className="text-sm">{formatNutritionValue(item.nutrition?.carbs || 0)}</span>
+                  </div>
+                  <div className="flex flex-col items-center min-w-[45px]">
+                    <span className="text-xs text-gray-500">G</span>
+                    <span className="text-sm">{formatNutritionValue(item.nutrition?.fat || 0)}</span>
+                  </div>
+                  
                   <button
                     onClick={() => handleRemoveItem(index)}
-                    className="p-1 rounded-lg hover:bg-gray-200"
+                    className="p-1 text-gray-400 hover:text-gray-600"
                   >
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-              </li>
+              </div>
             ))}
           </ul>
 
