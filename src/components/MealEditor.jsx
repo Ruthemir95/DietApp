@@ -42,11 +42,15 @@ const MealEditor = ({
   }, [newItemText, nutritionData]);
 
   // Gestisce l'aggiunta di un nuovo item
-  const handleAddItem = (item, nutrition) => {
-    setEditedItems(prev => [...prev, { 
-      item, 
-      nutrition,
-      id: Date.now() // Identificatore unico per l'item
+  const handleAddItem = () => {
+    if (!newItemText.trim()) return;
+    
+    const nutritionInfo = nutritionData[newItemText.trim()];
+    if (!nutritionInfo) return; // Non aggiunge elementi senza dati nutrizionali
+
+    setEditedItems(prev => [...prev, {
+      item: newItemText.trim(),
+      nutrition: nutritionInfo
     }]);
     setNewItemText('');
     setSuggestions([]);
@@ -66,6 +70,11 @@ const MealEditor = ({
       return;
     }
     onSave(editedItems);
+  };
+
+  const formatNumber = (num) => {
+    // Arrotonda a 1 decimale se il numero è decimale
+    return Number.isInteger(num) ? num : Number(num.toFixed(1));
   };
 
   return (
@@ -115,27 +124,34 @@ const MealEditor = ({
         <CardContent>
           {/* Lista degli alimenti */}
           <div className="space-y-2 mb-4">
-            {editedItems.map((item, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="w-2 h-2 bg-primary rounded-full" />
-                    <span>{item.item}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {item.nutrition && (
-                      <NutritionSummary nutrition={item.nutrition} size="small" />
-                    )}
-                    <button
-                      onClick={() => handleRemoveItem(index)}
-                      className="p-1 rounded-lg hover:bg-gray-200"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
+            {editedItems
+              .filter(item => item.item && item.item.trim() !== '')
+              .map((item, index) => (
+                <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-primary rounded-full" />
+                      <span>{item.item}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {item.nutrition && (
+                        <div className="flex gap-4 text-sm">
+                          <span>{item.nutrition.calories} Kcal</span>
+                          <span>{item.nutrition.protein}g P</span>
+                          <span>{item.nutrition.carbs}g C</span>
+                          <span>{item.nutrition.fat}g G</span>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => handleRemoveItem(index)}
+                        className="p-1 rounded-lg hover:bg-gray-200"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {/* Input per nuovo alimento */}
@@ -149,7 +165,7 @@ const MealEditor = ({
                 className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button
-                onClick={() => handleAddItem(newItemText, null)}
+                onClick={handleAddItem}
                 disabled={!newItemText.trim()}
                 className="p-2 rounded-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
               >
