@@ -49,8 +49,8 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'DietApp-logo.png') {
-            return 'DietApp-logo.png'
+          if (assetInfo.name === 'DietApp-logo.png' || assetInfo.name === 'DietApp-logo.webp') {
+            return assetInfo.name
           }
           if (assetInfo.name.endsWith('.css')) {
             return 'assets/[name]-[hash][extname]'
